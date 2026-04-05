@@ -1,6 +1,7 @@
 // src/pages/Billing.jsx
 import { useState, useEffect } from 'react'
 import { CheckCircle, Zap, CreditCard } from 'lucide-react'
+import PromoBox from '../components/PromoBox'
 import toast from 'react-hot-toast'
 import api from '../lib/api'
 import { useAuthStore } from '../lib/store'
@@ -129,7 +130,11 @@ export default function Billing() {
           )
         })}
       </div>
-
+{/* Promo code */}
+      <div style={{ marginTop: 32 }}>
+        <h3 style={{ marginBottom: 14 }}>Redeem Promo Code</h3>
+        <PromoBox />
+      </div>
       {/* Recent transactions */}
       {credits?.recent_transactions?.length > 0 && (
         <div style={{ marginTop: 32 }}>
