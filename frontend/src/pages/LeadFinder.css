@@ -1,0 +1,57 @@
+/* LeadFinder.css */
+.lead-finder { max-width: 860px; }
+
+.search-card { margin-bottom: 10px; }
+.search-main-row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+.search-main-row .form-group { margin-bottom: 0; }
+.search-btn-wrap { padding-bottom: 0; }
+
+.filter-toggle {
+  display: inline-flex; align-items: center; gap: 7px;
+  margin-top: 14px; cursor: pointer;
+  font-size: 0.8125rem; color: var(--text-2);
+  user-select: none;
+}
+.filter-toggle:hover { color: var(--text); }
+.filter-active-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+}
+.filters-row {
+  display: flex; align-items: center; gap: 20px;
+  flex-wrap: wrap; margin-top: 16px;
+  padding-top: 16px; border-top: 1px solid var(--border);
+}
+
+.cost-hint {
+  display: flex; align-items: center; gap: 5px;
+  margin-bottom: 20px;
+}
+
+.search-loading { text-align: center; padding: 60px; color: var(--text-2); }
+.search-loading .spinner { margin-bottom: 16px; }
+
+.results-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.leads-list { display: flex; flex-direction: column; gap: 8px; }
+
+.lead-row {
+  display: flex; align-items: center; gap: 16px;
+  justify-content: space-between; flex-wrap: wrap;
+  padding: 14px 18px;
+}
+.lead-row-main { display: flex; align-items: center; gap: 20px; flex: 1; flex-wrap: wrap; }
+.lead-name { font-family: var(--font-display); font-weight: 600; font-size: 0.9375rem; }
+.lead-address { display: flex; align-items: center; gap: 4px; margin-top: 3px; }
+.lead-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.meta-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.75rem; color: var(--text-2);
+  background: var(--bg); border: 1px solid var(--border);
+  padding: 3px 8px; border-radius: 99px;
+}
+.meta-chip.no-site { color: var(--orange); border-color: rgba(251,146,60,0.2); background: rgba(251,146,60,0.07); }
+.lead-row-actions { display: flex; gap: 8px; }

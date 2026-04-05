@@ -1,0 +1,66 @@
+/* Leads.css */
+.leads-page { max-width: 1000px; }
+
+.leads-filters {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+
+.leads-table {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.leads-table-head {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 0.8fr 0.8fr 0.9fr 0.7fr 0.5fr;
+  gap: 0;
+  padding: 10px 20px;
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.leads-table-row {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 0.8fr 0.8fr 0.9fr 0.7fr 0.5fr;
+  gap: 0;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.1s;
+}
+.leads-table-row:last-child { border-bottom: none; }
+.leads-table-row:hover { background: var(--bg-3); text-decoration: none; }
+
+.lead-biz-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.meta-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.75rem; color: var(--text-2);
+  background: var(--bg); border: 1px solid var(--border);
+  padding: 3px 8px; border-radius: 99px;
+}
+.meta-chip.no-site { color: var(--orange); border-color: rgba(251,146,60,0.2); background: rgba(251,146,60,0.07); }
+
+@media (max-width: 768px) {
+  .leads-table-head { display: none; }
+  .leads-table-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 14px;
+  }
+}
