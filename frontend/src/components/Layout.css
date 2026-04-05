@@ -135,6 +135,8 @@
   min-width: 0;
   overflow-y: auto;
   padding: 32px 40px;
+  max-width: 1000px;
+  width: 100%;
 }
 
 /* Page header */
