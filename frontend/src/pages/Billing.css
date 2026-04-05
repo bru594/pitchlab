@@ -8,7 +8,7 @@
 .credit-costs-row { display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap; }
 .cost-item { }
 
-.plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .plan-card { position: relative; }
 .plan-pro {
   border-color: rgba(232,197,71,0.3);
