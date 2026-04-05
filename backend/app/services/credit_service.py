@@ -1,16 +1,22 @@
 """
 PitchLab - Credit Service
-Handles credit deduction, balance checks, and monthly resets.
 """
 
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from fastapi import HTTPException
 
 from app.models.user import User, CreditAccount, CreditTransaction, PlanTier
 from app.core.config import settings
+
+
+def _monthly_credits(user: User) -> int:
+    if user.plan == PlanTier.pro:
+        return settings.PRO_MONTHLY_CREDITS
+    elif user.plan == PlanTier.starter:
+        return settings.STARTER_MONTHLY_CREDITS
+    return settings.FREE_MONTHLY_CREDITS
 
 
 async def get_or_create_credit_account(user: User, db: AsyncSession) -> CreditAccount:
@@ -20,16 +26,9 @@ async def get_or_create_credit_account(user: User, db: AsyncSession) -> CreditAc
     account = result.scalar_one_or_none()
 
     if not account:
-        if user.plan == PlanTier.pro:
-            monthly = settings.PRO_MONTHLY_CREDITS
-        elif user.plan == PlanTier.starter:
-            monthly = settings.STARTER_MONTHLY_CREDITS
-        else:
-            monthly = settings.FREE_MONTHLY_CREDITS
-        )
         account = CreditAccount(
             user_id=user.id,
-            balance=monthly,
+            balance=_monthly_credits(user),
             next_reset_at=datetime.now(timezone.utc) + timedelta(days=30),
         )
         db.add(account)
@@ -100,12 +99,7 @@ async def reset_monthly_credits(
     account: CreditAccount,
     db: AsyncSession,
 ) -> None:
-    if user.plan == PlanTier.pro:
-            monthly = settings.PRO_MONTHLY_CREDITS
-        elif user.plan == PlanTier.starter:
-            monthly = settings.STARTER_MONTHLY_CREDITS
-        else:
-            monthly = settings.FREE_MONTHLY_CREDITS
+    monthly = _monthly_credits(user)
 
     diff = monthly - account.balance
     if diff > 0:
@@ -138,11 +132,7 @@ async def get_balance(user: User, db: AsyncSession) -> dict:
         "lifetime_used": account.lifetime_used,
         "next_reset_at": account.next_reset_at.isoformat() if account.next_reset_at else None,
         "plan": user.plan,
-       "monthly_allocation": (
-            settings.PRO_MONTHLY_CREDITS if user.plan == PlanTier.pro
-            else settings.STARTER_MONTHLY_CREDITS if user.plan == PlanTier.starter
-            else settings.FREE_MONTHLY_CREDITS
-        ),
+        "monthly_allocation": _monthly_credits(user),
         "recent_transactions": [
             {
                 "amount": t.amount,
