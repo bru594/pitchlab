@@ -48,8 +48,11 @@ class Settings(BaseSettings):
     REDIS_URL: str = "redis://localhost:6379/0"
 
     # Credits per plan
-    FREE_MONTHLY_CREDITS: int = 25
+    FREE_MONTHLY_CREDITS: int = 15
+    STARTER_MONTHLY_CREDITS: int = 150
     PRO_MONTHLY_CREDITS: int = 500
+
+    STRIPE_STARTER_PRICE_ID: str = ""
 
     # Credit costs
     CREDIT_COST_LEAD_SEARCH: int = 5      # per search batch

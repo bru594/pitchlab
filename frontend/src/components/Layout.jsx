@@ -54,9 +54,6 @@ export default function Layout() {
             </div>
             <div className="user-meta">
               <div className="user-name">{user?.full_name || 'User'}</div>
-              <div className={`badge badge-${user?.plan || 'free'}`}>
-                {(user?.plan || 'free').toUpperCase()}
-              </div>
             </div>
           </div>
           <button className="logout-btn" onClick={handleLogout} title="Logout">

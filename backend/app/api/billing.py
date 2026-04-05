@@ -38,7 +38,7 @@ async def create_checkout_session(
         import stripe
         stripe.api_key = settings.STRIPE_SECRET_KEY
 
-        price_id = settings.STRIPE_PRO_PRICE_ID
+        price_id = settings.STRIPE_STARTER_PRICE_ID if req.plan == "starter" else settings.STRIPE_PRO_PRICE_ID
 
         if not user.stripe_customer_id:
             customer = stripe.Customer.create(email=user.email, name=user.full_name)
@@ -112,9 +112,17 @@ async def stripe_webhook(
         result = await db.execute(select(User).where(User.id == user_id))
         user = result.scalar_one_or_none()
         if user:
-            user.plan = PlanTier.pro if plan == "pro" else PlanTier.free
+            if plan == "pro":
+                user.plan = PlanTier.pro
+                credits_to_add = settings.PRO_MONTHLY_CREDITS
+            elif plan == "starter":
+                user.plan = PlanTier.starter
+                credits_to_add = settings.STARTER_MONTHLY_CREDITS
+            else:
+                user.plan = PlanTier.free
+                credits_to_add = settings.FREE_MONTHLY_CREDITS
             user.stripe_subscription_id = session.get("subscription")
-            await add_credits(user, db, amount=settings.PRO_MONTHLY_CREDITS, reason="subscription_activation")
+            await add_credits(user, db, amount=credits_to_add, reason="subscription_activation")
 
     elif event["type"] == "customer.subscription.deleted":
         sub = event["data"]["object"]
@@ -147,17 +155,29 @@ async def get_plans():
                 ],
             },
             {
+                "id": "starter",
+                "name": "Starter",
+                "price_monthly": 30,
+                "credits_monthly": settings.STARTER_MONTHLY_CREDITS,
+                "features": [
+                    f"{settings.STARTER_MONTHLY_CREDITS} credits/month",
+                    "Everything in Free",
+                    "Multi-step sequences",
+                    "Open tracking",
+                    "Priority support",
+                ],
+            },
+            {
                 "id": "pro",
                 "name": "Pro",
                 "price_monthly": 49,
                 "credits_monthly": settings.PRO_MONTHLY_CREDITS,
                 "features": [
                     f"{settings.PRO_MONTHLY_CREDITS} credits/month",
-                    "Everything in Free",
-                    "Multi-step sequences",
-                    "Open tracking",
+                    "Everything in Starter",
                     "CSV export",
-                    "Priority support",
+                    "3x more credits",
+                    "Best value",
                 ],
             },
         ]

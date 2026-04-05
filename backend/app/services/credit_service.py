@@ -20,10 +20,12 @@ async def get_or_create_credit_account(user: User, db: AsyncSession) -> CreditAc
     account = result.scalar_one_or_none()
 
     if not account:
-        monthly = (
-            settings.PRO_MONTHLY_CREDITS
-            if user.plan == PlanTier.pro
-            else settings.FREE_MONTHLY_CREDITS
+        if user.plan == PlanTier.pro:
+            monthly = settings.PRO_MONTHLY_CREDITS
+        elif user.plan == PlanTier.starter:
+            monthly = settings.STARTER_MONTHLY_CREDITS
+        else:
+            monthly = settings.FREE_MONTHLY_CREDITS
         )
         account = CreditAccount(
             user_id=user.id,
@@ -98,11 +100,12 @@ async def reset_monthly_credits(
     account: CreditAccount,
     db: AsyncSession,
 ) -> None:
-    monthly = (
-        settings.PRO_MONTHLY_CREDITS
-        if user.plan == PlanTier.pro
-        else settings.FREE_MONTHLY_CREDITS
-    )
+    if user.plan == PlanTier.pro:
+            monthly = settings.PRO_MONTHLY_CREDITS
+        elif user.plan == PlanTier.starter:
+            monthly = settings.STARTER_MONTHLY_CREDITS
+        else:
+            monthly = settings.FREE_MONTHLY_CREDITS
 
     diff = monthly - account.balance
     if diff > 0:
@@ -135,9 +138,9 @@ async def get_balance(user: User, db: AsyncSession) -> dict:
         "lifetime_used": account.lifetime_used,
         "next_reset_at": account.next_reset_at.isoformat() if account.next_reset_at else None,
         "plan": user.plan,
-        "monthly_allocation": (
-            settings.PRO_MONTHLY_CREDITS
-            if user.plan == PlanTier.pro
+       "monthly_allocation": (
+            settings.PRO_MONTHLY_CREDITS if user.plan == PlanTier.pro
+            else settings.STARTER_MONTHLY_CREDITS if user.plan == PlanTier.starter
             else settings.FREE_MONTHLY_CREDITS
         ),
         "recent_transactions": [

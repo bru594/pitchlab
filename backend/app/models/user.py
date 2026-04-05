@@ -23,8 +23,8 @@ def now_utc():
 
 class PlanTier(str, enum.Enum):
     free = "free"
+    starter = "starter"
     pro = "pro"
-
 
 class LeadStatus(str, enum.Enum):
     new = "new"

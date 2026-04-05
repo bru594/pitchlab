@@ -13,6 +13,7 @@ export default function Billing() {
   const [plans, setPlans]       = useState([])
   const [loading, setLoading]   = useState(true)
   const [upgrading, setUpgrading] = useState(false)
+  const [cancelled, setCancelled] = useState(() => localStorage.getItem('sub_cancelled') === 'true')
 
   useEffect(() => {
     Promise.all([
@@ -34,6 +35,7 @@ export default function Billing() {
         cancel_url: `${window.location.origin}/billing`,
       })
       // Refresh user data after successful checkout setup
+    localStorage.removeItem('sub_cancelled')
       const userRes = await api.get('/auth/me')
       const token = localStorage.getItem('pl_token')
       setAuth(userRes.data, token)
@@ -119,10 +121,21 @@ export default function Billing() {
                   <li key={f}><CheckCircle size={14} style={{ color: 'var(--green)' }} /> {f}</li>
                 ))}
               </ul>
-              {isCurrent ? (
+             {isCurrent ? (
                 <div>
                   <button className="btn btn-ghost w-full" disabled>Current plan</button>
-                  {isPro && <CancelButton />}
+                  {isPro && <CancelButton onCancelled={() => setCancelled(true)} />}
+                  {isPro && cancelled && (
+                    <div style={{
+                      marginTop: 10, padding: '10px 14px',
+                      background: 'rgba(251,146,60,0.1)',
+                      border: '1px solid rgba(251,146,60,0.3)',
+                      borderRadius: 6, fontSize: '0.875rem',
+                      color: 'var(--orange)'
+                    }}>
+                      ⚠️ Cancelled — you keep Pro until end of billing period, then revert to Free.
+                    </div>
+                  )}
                 </div>
               ) : (
                 <button
@@ -161,7 +174,7 @@ export default function Billing() {
       )}
     </div>
   )
-}function CancelButton() {
+}function CancelButton({ onCancelled }) {
   const [loading, setLoading] = useState(false)
 
   const cancel = async () => {
@@ -170,6 +183,8 @@ export default function Billing() {
     try {
       await api.post('/billing/cancel')
       toast.success('Subscription cancelled — you keep Pro until end of billing period')
+      if (onCancelled) onCancelled()
+      localStorage.setItem('sub_cancelled', 'true')
       setTimeout(() => window.location.reload(), 2000)
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Could not cancel')
