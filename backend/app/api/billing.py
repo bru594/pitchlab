@@ -151,3 +151,26 @@ async def get_plans():
             },
         ]
     }
+    @router.post("/cancel")
+async def cancel_subscription(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    if not user.stripe_subscription_id:
+        raise HTTPException(status_code=400, detail="No active subscription found")
+
+    if not settings.STRIPE_SECRET_KEY:
+        user.plan = PlanTier.free
+        user.stripe_subscription_id = None
+        return {"cancelled": True}
+
+    try:
+        import stripe
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe.Subscription.modify(
+            user.stripe_subscription_id,
+            cancel_at_period_end=True,
+        )
+        return {"cancelled": True, "message": "Subscription will cancel at end of billing period"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Stripe error: {str(e)}")
