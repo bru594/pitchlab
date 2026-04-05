@@ -8,7 +8,7 @@ import { useAuthStore } from '../lib/store'
 import './Billing.css'
 
 export default function Billing() {
-  const { user } = useAuthStore()
+  const { user, setAuth } = useAuthStore()
   const [credits, setCredits]   = useState(null)
   const [plans, setPlans]       = useState([])
   const [loading, setLoading]   = useState(true)
@@ -33,6 +33,10 @@ export default function Billing() {
         success_url: `${window.location.origin}/billing?upgraded=1`,
         cancel_url: `${window.location.origin}/billing`,
       })
+      // Refresh user data after successful checkout setup
+      const userRes = await api.get('/auth/me')
+      const token = localStorage.getItem('pl_token')
+      setAuth(userRes.data, token)
       if (data.checkout_url === 'https://checkout.stripe.com/mock') {
         toast('Stripe not configured — set STRIPE_* env vars to enable payments', { icon: '⚠️', duration: 6000 })
       } else {
@@ -116,7 +120,10 @@ export default function Billing() {
                 ))}
               </ul>
               {isCurrent ? (
-                <button className="btn btn-ghost w-full" disabled>Current plan</button>
+                <div>
+                  <button className="btn btn-ghost w-full" disabled>Current plan</button>
+                  {isPro && <CancelButton />}
+                </div>
               ) : (
                 <button
                   className={`btn w-full ${isPro ? 'btn-primary' : 'btn-ghost'}`}
@@ -153,5 +160,32 @@ export default function Billing() {
         </div>
       )}
     </div>
+  )
+}function CancelButton() {
+  const [loading, setLoading] = useState(false)
+
+  const cancel = async () => {
+    if (!window.confirm('Are you sure you want to cancel your Pro subscription?')) return
+    setLoading(true)
+    try {
+      await api.post('/billing/cancel')
+      toast.success('Subscription cancelled — you keep Pro until end of billing period')
+      setTimeout(() => window.location.reload(), 2000)
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Could not cancel')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <button
+      className="btn btn-danger w-full"
+      style={{ marginTop: 8 }}
+      onClick={cancel}
+      disabled={loading}
+    >
+      {loading ? <span className="spinner" /> : 'Cancel subscription'}
+    </button>
   )
 }
