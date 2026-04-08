@@ -162,7 +162,7 @@ async def get_plans():
                 "features": [
                     f"{settings.STARTER_MONTHLY_CREDITS} credits/month",
                     "Everything in Free",
-                    "Multi-step sequences",
+                    "perfect for beginers",
                     "Open tracking",
                     "Priority support",
                 ],
@@ -175,7 +175,7 @@ async def get_plans():
                 "features": [
                     f"{settings.PRO_MONTHLY_CREDITS} credits/month",
                     "Everything in Starter",
-                    "CSV export",
+                    "perfect for everyday use",
                     "3x more credits",
                     "Best value",
                 ],

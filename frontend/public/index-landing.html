@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PitchLab — Find Leads. Close Deals.</title>
+  <meta name="description" content="PitchLab helps web designers find local business leads, audit their websites, and send AI-written cold outreach. Built for solo freelancers who sell websites.">
+  <meta name="keywords" content="lead generation tool web designers, find local business leads, cold email generator, website audit tool, web designer CRM, local SEO leads">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0f172a;
+      --navy-2:  #1e293b;
+      --navy-3:  #334155;
+      --slate:   #64748b;
+      --slate-2: #94a3b8;
+      --line:    #e2e8f0;
+      --line-2:  #f1f5f9;
+      --white:   #ffffff;
+      --off:     #f8fafc;
+
+      --blue:     #2563eb;
+      --blue-2:   #1d4ed8;
+      --blue-light: #eff6ff;
+      --blue-mid:   #dbeafe;
+
+      --green:   #059669;
+      --green-bg:#ecfdf5;
+
+      --text:    #0f172a;
+      --text-2:  #475569;
+      --text-3:  #94a3b8;
+
+      --font: 'Plus Jakarta Sans', sans-serif;
+      --radius: 8px;
+      --radius-lg: 14px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; }
+
+    /* ── Nav ──────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 40px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo svg { color: var(--blue); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-2);
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--blue-2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--line);
+    }
+    .btn-ghost:hover { background: var(--off); color: var(--text); }
+
+    .btn-lg { padding: 13px 28px; font-size: 0.9375rem; border-radius: var(--radius-lg); }
+
+    /* ── Hero ─────────────────────────────────── */
+    .hero {
+      background: var(--white);
+      padding: 80px 40px 70px;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1px solid var(--blue-mid);
+      padding: 5px 14px;
+      border-radius: 99px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      margin-bottom: 28px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--navy);
+      max-width: 760px;
+      margin: 0 auto 20px;
+    }
+
+    .hero h1 span {
+      color: var(--blue);
+    }
+
+    .hero p {
+      font-size: 1.125rem;
+      color: var(--text-2);
+      max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-note {
+      margin-top: 16px;
+      font-size: 0.8125rem;
+      color: var(--text-3);
+    }
+
+    /* ── Social proof strip ───────────────────── */
+    .proof-strip {
+      background: var(--off);
+      border-bottom: 1px solid var(--line);
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .proof-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    .proof-icon {
+      width: 18px;
+      height: 18px;
+      background: var(--green-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+      font-size: 10px;
+    }
+
+    /* ── How it works ─────────────────────────── */
+    .section {
+      padding: 80px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 1.0625rem;
+      color: var(--text-2);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-top: 52px;
+      background: var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .step {
+      background: var(--white);
+      padding: 28px 24px;
+    }
+
+    .step-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--blue);
+      margin-bottom: 14px;
+    }
+
+    .step-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--blue-light);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      margin-bottom: 14px;
+    }
+
+    .step h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .step p {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    /* ── Features ─────────────────────────────── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 52px;
+      background: var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .feature {
+      background: var(--white);
+      padding: 28px 24px;
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--blue-light);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      margin-bottom: 16px;
+    }
+
+    .feature h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature p {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    /* ── Pricing ──────────────────────────────── */
+    .pricing-section {
+      background: var(--off);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 80px 40px;
+    }
+
+    .pricing-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 52px;
+    }
+
+    .plan-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      position: relative;
+    }
+
+    .plan-card.featured {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 1px var(--blue), var(--shadow);
+    }
+
+    .plan-tag {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--blue);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+
+    .plan-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    .plan-price {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .plan-period {
+      font-size: 0.875rem;
+      color: var(--text-3);
+      margin-bottom: 20px;
+    }
+
+    .plan-credits {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--blue);
+      background: var(--blue-light);
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .plan-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.875rem;
+      color: var(--text-2);
+    }
+
+    .check {
+      width: 16px;
+      height: 16px;
+      background: var(--green-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--green);
+      font-size: 9px;
+      flex-shrink: 0;
+    }
+
+    .plan-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 11px;
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+    }
+
+    .plan-btn-primary { background: var(--blue); color: white; }
+    .plan-btn-primary:hover { background: var(--blue-2); }
+    .plan-btn-secondary { background: var(--off); color: var(--navy); border: 1px solid var(--line); }
+    .plan-btn-secondary:hover { background: var(--line-2); }
+
+    /* ── CTA ──────────────────────────────────── */
+    .cta-section {
+      padding: 80px 40px;
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      font-size: 1.0625rem;
+      color: var(--text-2);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    /* ── Footer ───────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--navy);
+    }
+
+    footer p {
+      font-size: 0.8125rem;
+      color: var(--text-3);
+    }
+
+    /* ── Responsive ───────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 56px 20px 48px; }
+      .section { padding: 56px 20px; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      footer { padding: 24px 20px; flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .steps { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Animations ───────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-badge { animation: fadeUp 0.4s ease both; }
+    .hero h1    { animation: fadeUp 0.4s 0.1s ease both; }
+    .hero p     { animation: fadeUp 0.4s 0.2s ease both; }
+    .hero-actions { animation: fadeUp 0.4s 0.3s ease both; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </svg>
+    PitchLab
+  </div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <div class="nav-cta">
+    <a href="/login" class="btn btn-ghost">Sign in</a>
+    <a href="/register" class="btn btn-primary">Start free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+    Built for web designers
+  </div>
+  <h1>Find local leads.<br><span>Close more deals.</span></h1>
+  <p>PitchLab finds local businesses that need a website, audits their online presence, and writes your cold outreach for you.</p>
+  <div class="hero-actions">
+    <a href="/register" class="btn btn-primary btn-lg">Start for free →</a>
+    <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
+  </div>
+  <p class="hero-note">Free plan available · No credit card required</p>
+</section>
+
+<!-- PROOF STRIP -->
+<div class="proof-strip">
+  <div class="proof-item">
+    <div class="proof-icon">✓</div>
+    Real Google Places data
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon">✓</div>
+    AI-written cold emails
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon">✓</div>
+    Full website audit
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon">✓</div>
+    Built for solo freelancers
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-label">How it works</div>
+  <div class="section-title">From search to sent in minutes</div>
+  <p class="section-sub">A simple four-step workflow that gets you from zero to a personalized pitch without the manual research.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <h3>Find Leads</h3>
+      <p>Search by location and business type. Get a list of real local businesses pulled from Google Maps.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <h3>Audit Their Site</h3>
+      <p>One click scores their website on speed, mobile, SEO, and design. Shows you exactly what's wrong.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <h3>Generate Pitch</h3>
+      <p>AI writes a cold email, call script, and SMS based on their specific audit results. Specific, not generic.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </div>
+      <h3>Send & Follow Up</h3>
+      <p>Send outreach directly from PitchLab. Track opens and replies. Auto-stop sequences on reply.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section style="background: var(--off); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="section" id="features" style="padding-top: 80px; padding-bottom: 80px;">
+    <div class="section-label">Features</div>
+    <div class="section-title">Everything you need to close deals</div>
+    <p class="section-sub">No bloat. Just the tools that move the needle for a solo web designer.</p>
+
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <h3>Google Places Search</h3>
+        <p>Real business data from Google Maps. Filter by no website, poor site, or low reviews to find the best targets.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Website Audit Engine</h3>
+        <p>Scores speed, mobile friendliness, SEO basics, and design quality. Produces a plain-English sales summary.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h3>AI Pitch Generator</h3>
+        <p>Writes cold email, call script, and SMS using the audit findings. Specific to each business, not a template.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <h3>Email Outreach</h3>
+        <p>Send emails directly from the app. Set up multi-step sequences that stop automatically when someone replies.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <h3>Lead Management</h3>
+        <p>Track every lead through your pipeline. New, contacted, replied, closed. Filter, search, and export.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <h3>Credit-Based Billing</h3>
+        <p>Pay for what you use. Credits reset monthly. Free plan included. Upgrade when you're ready to scale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div style="text-align: center;">
+      <div class="section-label" style="text-align:center;">Pricing</div>
+      <div class="section-title">Simple, transparent pricing</div>
+      <p class="section-sub" style="margin: 0 auto;">Start free. Upgrade when you're closing deals.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-period">forever free</div>
+        <div class="plan-credits">15 credits / month</div>
+        <ul class="plan-features">
+          <li><div class="check">✓</div> Lead search</li>
+          <li><div class="check">✓</div> Website audits</li>
+          <li><div class="check">✓</div> AI pitch generation</li>
+          <li><div class="check">✓</div> Email outreach</li>
+        </ul>
+        <a href="/register" class="plan-btn plan-btn-secondary">Get started free</a>
+      </div>
+
+      <div class="plan-card featured">
+        <div class="plan-tag">Most Popular</div>
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$30</div>
+        <div class="plan-period">per month</div>
+        <div class="plan-credits">150 credits / month</div>
+        <ul class="plan-features">
+          <li><div class="check">✓</div> Everything in Free</li>
+          <li><div class="check">✓</div> Multi-step sequences</li>
+          <li><div class="check">✓</div> Open tracking</li>
+          <li><div class="check">✓</div> Priority support</li>
+        </ul>
+        <a href="/register" class="plan-btn plan-btn-primary">Start Starter</a>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$49</div>
+        <div class="plan-period">per month</div>
+        <div class="plan-credits">500 credits / month</div>
+        <ul class="plan-features">
+          <li><div class="check">✓</div> Everything in Starter</li>
+          <li><div class="check">✓</div> 3× more credits</li>
+          <li><div class="check">✓</div> CSV export</li>
+          <li><div class="check">✓</div> Best value</li>
+        </ul>
+        <a href="/register" class="plan-btn plan-btn-secondary">Start Pro</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to find your next client?</h2>
+  <p>Join web designers using PitchLab to find local leads and close more deals every month.</p>
+  <a href="/register" class="btn btn-primary btn-lg">Create your free account →</a>
+  <p style="margin-top: 14px; font-size: 0.8125rem; color: var(--text-3);">No credit card required · 15 free credits to start</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #2563eb;">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </svg>
+    PitchLab
+  </div>
+  <p>© 2026 Goggin Digital. Built for web designers.</p>
+  <div style="display:flex; gap: 20px; font-size: 0.8125rem; color: var(--text-3);">
+    <a href="/login" style="color: var(--text-3);">Sign in</a>
+    <a href="/register" style="color: var(--text-3);">Sign up</a>
+  </div>
+</footer>
+
+</body>
+</html>

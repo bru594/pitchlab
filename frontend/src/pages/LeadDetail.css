@@ -1,28 +1,46 @@
-/* LeadDetail.css */
-.lead-detail { max-width: 860px; }
+/* LeadDetail.css — Light theme */
+.lead-detail { width: 100%; }
 
-.back-btn { margin-bottom: 20px; }
+.back-btn { margin-bottom: 18px; }
 
 .detail-header {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 20px; margin-bottom: 20px; flex-wrap: wrap;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
 }
+
 .detail-header-left h1 { margin-bottom: 10px; }
+
 .detail-meta {
-  display: flex; flex-wrap: wrap; gap: 14px;
-  font-size: 0.875rem; color: var(--text-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 0.875rem;
+  color: var(--text-2);
 }
-.detail-meta span, .detail-meta a {
-  display: inline-flex; align-items: center; gap: 6px;
+
+.detail-meta span,
+.detail-meta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
+
 .detail-meta a { color: var(--text-2); }
 .detail-meta a:hover { color: var(--accent); text-decoration: none; }
 .text-orange { color: var(--orange) !important; }
 
+/* Action bar */
 .action-bar {
-  display: flex; align-items: center; gap: 10px;
-  flex-wrap: wrap; margin-bottom: 24px;
-  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+  padding: 14px 18px;
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -31,30 +49,36 @@
 .credit-cost {
   font-size: 0.7rem;
   color: var(--text-3);
-  background: var(--bg);
+  background: var(--bg-3);
   padding: 1px 6px;
   border-radius: 99px;
   border: 1px solid var(--border);
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 .tab-content { padding-top: 4px; }
 
-/* ── Audit Score ───────────── */
+/* Audit score */
 .audit-score-row {
-  display: flex; gap: 28px; align-items: center;
-  margin-bottom: 24px; flex-wrap: wrap;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
 }
 
 .score-ring {
-  width: 100px; height: 100px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
   border: 4px solid var(--score-color, var(--green));
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }
+
 .score-ring-value {
   font-family: var(--font-display);
   font-size: 1.75rem;
@@ -62,36 +86,55 @@
   color: var(--score-color, var(--green));
   line-height: 1;
 }
+
 .score-ring-grade {
   font-family: var(--font-display);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--text-2);
+  font-weight: 600;
 }
 
 .sub-scores { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
 .sub-score {
-  display: flex; align-items: center; gap: 12px;
-}
-.sub-score-label {
-  width: 52px; font-size: 0.8125rem;
-  font-family: var(--font-display); color: var(--text-2);
-}
-.sub-score-val {
-  width: 28px; text-align: right;
-  font-family: var(--font-display); font-size: 0.875rem; font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* ── Sales Summary ─────────── */
+.sub-score-label {
+  width: 52px;
+  font-size: 0.8rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.sub-score-val {
+  width: 28px;
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+/* Sales summary */
 .sales-summary {
-  margin-bottom: 24px;
-  border-color: rgba(232,197,71,0.15);
-  background: rgba(232,197,71,0.03);
+  margin-bottom: 22px;
+  background: #eff6ff;
+  border-color: var(--accent-mid);
 }
+
 .sales-summary-header {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 14px;
-  font-family: var(--font-display); font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text);
 }
+
 .sales-summary-text {
   font-family: var(--font-body);
   font-size: 0.9rem;
@@ -100,43 +143,61 @@
   color: var(--text-2);
 }
 
-/* ── Issues ────────────────── */
-.issues-list { margin-bottom: 24px; }
+/* Issues */
+.issues-list { margin-bottom: 22px; }
+
 .issue-row {
-  display: flex; align-items: flex-start; gap: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   padding: 10px 14px;
   border-bottom: 1px solid var(--border);
-  font-size: 0.875rem; color: var(--text-2);
+  font-size: 0.875rem;
+  color: var(--text-2);
 }
+
 .issue-row:first-of-type { border-top: 1px solid var(--border); }
 
-/* ── Pitches ───────────────── */
-.pitches { display: flex; flex-direction: column; gap: 14px; }
+/* Pitches */
+.pitches { display: flex; flex-direction: column; gap: 12px; }
+
 .pitch-block { }
+
 .pitch-block-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
+
 .pitch-block-title {
-  display: flex; align-items: center; gap: 8px;
-  font-family: var(--font-display); font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-display);
+  font-weight: 700;
   color: var(--text);
+  font-size: 0.9375rem;
 }
+
 .pitch-content {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   line-height: 1.75;
   white-space: pre-wrap;
   color: var(--text-2);
-  background: var(--bg);
+  background: var(--bg-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 14px;
 }
 
-/* ── Send form ─────────────── */
-.send-form { max-width: 600px; }
+/* Send form */
+.send-form { max-width: 580px; }
+
 .send-form-footer {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 4px;
 }

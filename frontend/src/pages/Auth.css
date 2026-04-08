@@ -1,4 +1,4 @@
-/* Auth.css */
+/* Auth.css — Light theme */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -7,10 +7,8 @@
   justify-content: center;
   background: var(--bg);
   padding: 20px;
-  position: relative;
 }
 
-/* subtle grid bg */
 .auth-page::before {
   content: '';
   position: fixed;
@@ -18,18 +16,18 @@
   background-image:
     linear-gradient(var(--border) 1px, transparent 1px),
     linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 48px 48px;
-  opacity: 0.35;
+  background-size: 40px 40px;
+  opacity: 0.5;
   pointer-events: none;
 }
 
 .auth-card {
   background: var(--bg-2);
-  border: 1px solid var(--border-2);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 36px 40px;
   width: 100%;
-  max-width: 420px;
+  max-width: 400px;
   position: relative;
   box-shadow: var(--shadow-lg);
 }
@@ -41,18 +39,21 @@
   font-family: var(--font-display);
   font-size: 1.125rem;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--text);
   margin-bottom: 24px;
+  letter-spacing: -0.02em;
 }
 
+.auth-logo svg { color: var(--accent); }
+
 .auth-card h2 {
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   margin-bottom: 6px;
 }
 
 .auth-sub {
   color: var(--text-2);
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
   margin-bottom: 24px;
 }
 
@@ -64,24 +65,25 @@
 }
 
 .perk {
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
   color: var(--green);
-  background: rgba(74,222,128,0.08);
-  border: 1px solid rgba(74,222,128,0.15);
+  background: var(--green-bg);
+  border: 1px solid rgba(5,150,105,0.15);
   padding: 4px 10px;
   border-radius: 99px;
+  font-weight: 500;
 }
 
 .auth-switch {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 18px;
   font-size: 0.875rem;
   color: var(--text-2);
 }
 
 .auth-demo-note {
-  margin-top: 16px;
-  font-size: 0.8125rem;
+  margin-top: 14px;
+  font-size: 0.8rem;
   color: var(--text-3);
   position: relative;
 }

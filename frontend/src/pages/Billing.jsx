@@ -1,19 +1,21 @@
-// src/pages/Billing.jsx
+// src/pages/Billing.jsx — Fixed: no fake features
 import { useState, useEffect } from 'react'
 import { CheckCircle, Zap, CreditCard } from 'lucide-react'
-import PromoBox from '../components/PromoBox'
 import toast from 'react-hot-toast'
 import api from '../lib/api'
 import { useAuthStore } from '../lib/store'
+import PromoBox from '../components/PromoBox'
 import './Billing.css'
 
 export default function Billing() {
-  const { user, setAuth } = useAuthStore()
-  const [credits, setCredits]   = useState(null)
-  const [plans, setPlans]       = useState([])
-  const [loading, setLoading]   = useState(true)
+  const { user } = useAuthStore()
+  const [credits, setCredits]     = useState(null)
+  const [plans, setPlans]         = useState([])
+  const [loading, setLoading]     = useState(true)
   const [upgrading, setUpgrading] = useState(false)
-  const [cancelled, setCancelled] = useState(() => localStorage.getItem('sub_cancelled') === 'true')
+  const [cancelled, setCancelled] = useState(
+    () => localStorage.getItem('sub_cancelled') === 'true'
+  )
 
   useEffect(() => {
     Promise.all([
@@ -29,18 +31,20 @@ export default function Billing() {
     if (planId === 'free') return
     setUpgrading(true)
     try {
+      localStorage.removeItem('sub_cancelled')
+      const userRes = await api.get('/auth/me')
+      const { useAuthStore: store } = await import('../lib/store')
+      const token = localStorage.getItem('pl_token')
+      useAuthStore.getState().setAuth(userRes.data, token)
+
       const { data } = await api.post('/billing/create-checkout', {
         plan: planId,
         success_url: `${window.location.origin}/billing?upgraded=1`,
-        cancel_url: `${window.location.origin}/billing`,
+        cancel_url:  `${window.location.origin}/billing`,
       })
-      // Refresh user data after successful checkout setup
-    localStorage.removeItem('sub_cancelled')
-      const userRes = await api.get('/auth/me')
-      const token = localStorage.getItem('pl_token')
-      setAuth(userRes.data, token)
+
       if (data.checkout_url === 'https://checkout.stripe.com/mock') {
-        toast('Stripe not configured — set STRIPE_* env vars to enable payments', { icon: '⚠️', duration: 6000 })
+        toast('Stripe not configured — set STRIPE_* env vars', { icon: '⚠️', duration: 5000 })
       } else {
         window.location.href = data.checkout_url
       }
@@ -57,7 +61,9 @@ export default function Billing() {
     </div>
   )
 
-  const pct = credits ? Math.round((credits.balance / credits.monthly_allocation) * 100) : 0
+  const pct = credits
+    ? Math.round((credits.balance / credits.monthly_allocation) * 100)
+    : 0
 
   return (
     <div className="billing-page fade-in">
@@ -66,107 +72,179 @@ export default function Billing() {
         <p>Manage your plan and track credit usage.</p>
       </div>
 
-      {/* Current credits */}
-      <div className="credit-detail-card card">
+      {/* Credit balance */}
+      <div className="credit-detail-card card" style={{ marginBottom: 24 }}>
         <div className="credit-detail-header">
-          <Zap size={20} className="text-accent" />
+          <Zap size={18} />
           <h3>Credit Balance</h3>
-          <span className={`badge badge-${credits?.plan}`}>{(credits?.plan || '').toUpperCase()}</span>
+          <span className={`badge badge-${credits?.plan}`}>
+            {(credits?.plan || '').toUpperCase()}
+          </span>
         </div>
+
         <div className="credit-numbers">
           <div>
-            <div style={{ fontSize: '3rem', fontFamily: 'var(--font-display)', fontWeight: 800, color: 'var(--accent)', lineHeight: 1 }}>
+            <div style={{
+              fontSize: '2.75rem',
+              fontFamily: 'var(--font-display)',
+              fontWeight: 800,
+              color: 'var(--accent)',
+              lineHeight: 1,
+              letterSpacing: '-0.03em',
+            }}>
               {credits?.balance}
             </div>
-            <div className="text-muted text-sm">of {credits?.monthly_allocation} monthly credits remaining</div>
+            <div className="text-muted text-sm" style={{ marginTop: 4 }}>
+              of {credits?.monthly_allocation} monthly credits remaining
+            </div>
           </div>
           <div className="credit-meta-grid">
-            <div><div className="text-dim text-xs">Lifetime used</div><div style={{ fontWeight: 600 }}>{credits?.lifetime_used}</div></div>
-            <div><div className="text-dim text-xs">Next reset</div><div style={{ fontWeight: 600 }}>{credits?.next_reset_at ? new Date(credits.next_reset_at).toLocaleDateString() : '—'}</div></div>
+            <div>
+              <div className="text-dim text-xs">Lifetime used</div>
+              <div style={{ fontWeight: 700, marginTop: 2 }}>{credits?.lifetime_used}</div>
+            </div>
+            <div>
+              <div className="text-dim text-xs">Next reset</div>
+              <div style={{ fontWeight: 700, marginTop: 2 }}>
+                {credits?.next_reset_at
+                  ? new Date(credits.next_reset_at).toLocaleDateString()
+                  : '—'}
+              </div>
+            </div>
           </div>
         </div>
-        <div className="score-bar-track" style={{ height: 8, marginTop: 16 }}>
-          <div className="score-bar-fill" style={{ width: `${pct}%`, background: pct > 30 ? 'var(--accent)' : 'var(--red)' }} />
+
+        <div className="score-bar-track" style={{ height: 7, margin: '16px 0 12px' }}>
+          <div
+            className="score-bar-fill"
+            style={{
+              width: `${pct}%`,
+              background: pct > 30 ? 'var(--accent)' : 'var(--red)',
+            }}
+          />
         </div>
+
         <div className="credit-costs-row">
           {credits?.costs && Object.entries(credits.costs).map(([k, v]) => (
-            <div key={k} className="cost-item">
-              <div className="text-dim text-xs">{k.replace('_', ' ')}</div>
-              <div style={{ fontWeight: 600, color: 'var(--accent)' }}>{v}cr</div>
+            <div key={k}>
+              <div className="text-dim text-xs" style={{ marginBottom: 2 }}>
+                {k.replace(/_/g, ' ')}
+              </div>
+              <div style={{ fontWeight: 700, color: 'var(--accent)', fontSize: '0.9rem' }}>
+                {v} cr
+              </div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Plans */}
-      <h3 style={{ margin: '28px 0 16px' }}>Plans</h3>
+      <h3 style={{ marginBottom: 14 }}>Plans</h3>
       <div className="plans-grid">
         {plans.map((plan) => {
           const isCurrent = credits?.plan === plan.id
-          const isPro = plan.id === 'pro'
+          const isPro     = plan.id === 'pro'
+          const isStarter = plan.id === 'starter'
+
           return (
-            <div key={plan.id} className={`plan-card card ${isPro ? 'plan-pro' : ''} ${isCurrent ? 'plan-current' : ''}`}>
+            <div
+              key={plan.id}
+              className={`plan-card ${isPro ? 'plan-pro' : ''} ${isCurrent ? 'plan-current' : ''}`}
+            >
               {isPro && <div className="plan-badge">Most Popular</div>}
+
               <div className="plan-name">{plan.name}</div>
+
               <div className="plan-price">
-                {plan.price_monthly === 0 ? (
-                  <span>Free</span>
-                ) : (
-                  <><span style={{ fontSize: '2.5rem' }}>${plan.price_monthly}</span><span className="text-muted text-sm">/mo</span></>
-                )}
+                {plan.price_monthly === 0
+                  ? <span>Free</span>
+                  : <><span>${plan.price_monthly}</span><span style={{ fontSize: '0.9rem', fontWeight: 400, color: 'var(--text-2)' }}>/mo</span></>
+                }
               </div>
+
               <div className="plan-credits">{plan.credits_monthly} credits/month</div>
+
               <ul className="plan-features">
                 {plan.features.map((f) => (
-                  <li key={f}><CheckCircle size={14} style={{ color: 'var(--green)' }} /> {f}</li>
+                  <li key={f}>
+                    <div style={{
+                      width: 16, height: 16, borderRadius: '50%',
+                      background: 'var(--green-bg)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0,
+                    }}>
+                      <CheckCircle size={10} style={{ color: 'var(--green)' }} />
+                    </div>
+                    {f}
+                  </li>
                 ))}
               </ul>
-             {isCurrent ? (
+
+              {isCurrent ? (
                 <div>
-                  <button className="btn btn-ghost w-full" disabled>Current plan</button>
-                  {isPro && <CancelButton onCancelled={() => setCancelled(true)} />}
-                  {isPro && cancelled && (
+                  <button className="btn btn-ghost w-full" disabled style={{ marginBottom: 8 }}>
+                    Current plan
+                  </button>
+                  {(isPro || isStarter) && (
+                    <CancelButton onCancelled={() => {
+                      localStorage.setItem('sub_cancelled', 'true')
+                      setCancelled(true)
+                    }} />
+                  )}
+                  {(isPro || isStarter) && cancelled && (
                     <div style={{
                       marginTop: 10, padding: '10px 14px',
-                      background: 'rgba(251,146,60,0.1)',
-                      border: '1px solid rgba(251,146,60,0.3)',
-                      borderRadius: 6, fontSize: '0.875rem',
-                      color: 'var(--orange)'
+                      background: '#fffbeb',
+                      border: '1px solid rgba(217,119,6,0.25)',
+                      borderRadius: 6, fontSize: '0.8125rem',
+                      color: 'var(--orange)',
                     }}>
-                      ⚠️ Cancelled — you keep Pro until end of billing period, then revert to Free.
+                      ⚠️ Cancelled — you keep access until end of billing period.
                     </div>
                   )}
                 </div>
               ) : (
                 <button
-                  className={`btn w-full ${isPro ? 'btn-primary' : 'btn-ghost'}`}
+                  className={`btn w-full ${isPro || isStarter ? 'btn-primary' : 'btn-ghost'}`}
                   onClick={() => upgrade(plan.id)}
                   disabled={upgrading || plan.id === 'free'}
                 >
-                  {upgrading ? <span className="spinner" /> : isPro ? <><CreditCard size={15} /> Upgrade to Pro</> : 'Downgrade'}
+                  {upgrading
+                    ? <span className="spinner" />
+                    : plan.id === 'free'
+                      ? 'Free plan'
+                      : <><CreditCard size={14} /> Upgrade to {plan.name}</>}
                 </button>
               )}
             </div>
           )
         })}
       </div>
-{/* Promo code */}
-      <div style={{ marginTop: 32 }}>
-        <h3 style={{ marginBottom: 14 }}>Redeem Promo Code</h3>
+
+      {/* Promo code */}
+      <div style={{ marginTop: 28 }}>
+        <h3 style={{ marginBottom: 12 }}>Redeem Promo Code</h3>
         <PromoBox />
       </div>
-      {/* Recent transactions */}
+
+      {/* Transactions */}
       {credits?.recent_transactions?.length > 0 && (
-        <div style={{ marginTop: 32 }}>
-          <h3 style={{ marginBottom: 14 }}>Recent Transactions</h3>
+        <div style={{ marginTop: 28 }}>
+          <h3 style={{ marginBottom: 12 }}>Recent Transactions</h3>
           <div className="transactions card">
             {credits.recent_transactions.map((t, i) => (
               <div key={i} className="transaction-row">
                 <span className="text-sm">{t.reason.replace(/_/g, ' ')}</span>
-                <span style={{ color: t.amount > 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>
+                <span style={{
+                  color: t.amount > 0 ? 'var(--green)' : 'var(--red)',
+                  fontWeight: 700,
+                  fontSize: '0.875rem',
+                }}>
                   {t.amount > 0 ? '+' : ''}{t.amount} cr
                 </span>
-                <span className="text-dim text-xs">{new Date(t.created_at).toLocaleDateString()}</span>
+                <span className="text-dim text-xs">
+                  {new Date(t.created_at).toLocaleDateString()}
+                </span>
               </div>
             ))}
           </div>
@@ -174,18 +252,19 @@ export default function Billing() {
       )}
     </div>
   )
-}function CancelButton({ onCancelled }) {
+}
+
+function CancelButton({ onCancelled }) {
   const [loading, setLoading] = useState(false)
 
   const cancel = async () => {
-    if (!window.confirm('Are you sure you want to cancel your Pro subscription?')) return
+    if (!window.confirm('Cancel your subscription? You keep access until end of billing period.')) return
     setLoading(true)
     try {
       await api.post('/billing/cancel')
-      toast.success('Subscription cancelled — you keep Pro until end of billing period')
+      toast.success('Cancelled — you keep access until end of billing period')
       if (onCancelled) onCancelled()
-      localStorage.setItem('sub_cancelled', 'true')
-      setTimeout(() => window.location.reload(), 2000)
+      setTimeout(() => window.location.reload(), 1500)
     } catch (err) {
       toast.error(err.response?.data?.detail || 'Could not cancel')
     } finally {
@@ -196,7 +275,7 @@ export default function Billing() {
   return (
     <button
       className="btn btn-danger w-full"
-      style={{ marginTop: 8 }}
+      style={{ marginTop: 6 }}
       onClick={cancel}
       disabled={loading}
     >
